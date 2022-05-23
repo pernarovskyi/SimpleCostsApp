@@ -1,6 +1,6 @@
 using System;
 
-namespace SimpleCostsApplication.Models
+namespace CostApplication.Models
 {
     public class ErrorViewModel
     {
