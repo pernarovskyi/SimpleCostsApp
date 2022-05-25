@@ -29,6 +29,9 @@ namespace CostApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
             services.AddControllersWithViews();
+            services.AddMvc(options => {
+                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((_) => "The field is required.");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

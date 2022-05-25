@@ -29,7 +29,9 @@
                         <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
                     <div class="col-3">
-                        <input asp-for="TypeOfCosts" class="form-control" />
+                        <select asp-for="TypeOfCosts" asp-items="Html.GetEnumSelectList<TypeOfCosts>()" class="form-control">
+                            <option value="" class="text-light">--- Select item ---</option>
+                        </select>
                         <span asp-validation-for="TypeOfCosts" class="text-danger"></span>
                     </div>
                     <div class="col-3">

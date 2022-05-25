@@ -1,4 +1,5 @@
 ﻿using CostApplication.Data;
+using CostApplication.Enum;
 using CostApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace CostApplication.Controllers
 
         [HttpGet]
         public IActionResult Create()
-        {
+        {            
             return View();
         }
 

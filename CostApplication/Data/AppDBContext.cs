@@ -11,6 +11,6 @@ namespace CostApplication.Data
 
         }
 
-        public DbSet<Cost> Costs { get; set; } // table in database
+        public DbSet<Cost> Costs { get; set; }
     }
 }
