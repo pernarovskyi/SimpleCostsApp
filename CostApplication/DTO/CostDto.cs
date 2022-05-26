@@ -14,7 +14,7 @@ namespace CostApplication.DTO
         [Required]
         [DisplayName("Created on")]
         [DataType(DataType.Date)]
-        public DateTime Date { get; set; }        
+        public DateTime Date { get; set; }
 
         [Required]
         [DisplayName("Type of Costs")]
