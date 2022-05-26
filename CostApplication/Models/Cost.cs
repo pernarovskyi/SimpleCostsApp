@@ -15,6 +15,12 @@ namespace CostApplication.Models
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
+        [DataType(DataType.Date)]
+        public DateTime CreatedOn { get; set; } // hide from front-end
+
+        [DataType(DataType.Date)]
+        public DateTime? ModifiedOn { get; set; } // hide from front-end
+
         [Required]
         [DisplayName("Type of Costs")]
         public TypeOfCosts TypeOfCosts { get; set; }
@@ -22,5 +28,7 @@ namespace CostApplication.Models
         [Required]
         public float Amount { get; set; }
         public string Description { get; set; }
+
+        public string SensetiveData { get; set; }   // hide from front-end
     }
 }

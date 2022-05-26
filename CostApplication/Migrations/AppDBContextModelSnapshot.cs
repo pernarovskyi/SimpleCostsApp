@@ -29,10 +29,19 @@ namespace CostApplication.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SensetiveData")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TypeOfCosts")

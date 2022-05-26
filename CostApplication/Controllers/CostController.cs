@@ -1,8 +1,10 @@
 ﻿using CostApplication.Data;
-using CostApplication.Enum;
+using CostApplication.DTO;
 using CostApplication.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CostApplication.Controllers
 {
@@ -13,10 +15,20 @@ namespace CostApplication.Controllers
         {
             _db = db;
         }
+        [HttpGet]
         public IActionResult Index()
         {
-            IEnumerable<Cost> objList = _db.Costs;
-            return View(objList);
+           var costs = from c in _db.Costs
+                        select new CostDto()
+                        {
+                            Id = c.Id,
+                            Date = c.Date,
+                            TypeOfCosts = c.TypeOfCosts,
+                            Amount = c.Amount,
+                            Description = c.Description
+                        };
+
+           return View(costs);
         }
 
         [HttpGet]
@@ -26,8 +38,19 @@ namespace CostApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Cost obj)
+        public IActionResult Create(CostDto objDto)
         {
+            Cost obj = new Cost
+            {
+                Date = objDto.Date,
+                TypeOfCosts = objDto.TypeOfCosts,
+                Amount = objDto.Amount,
+                CreatedOn = DateTime.Now,
+                ModifiedOn = null,
+                Description = objDto.Description,
+                SensetiveData = "Sensitivadata"
+            };
+                 
             if (ModelState.IsValid) 
             {
                 _db.Costs.Add(obj);
@@ -57,15 +80,20 @@ namespace CostApplication.Controllers
         [HttpPost]
         public IActionResult DeleteRecord(int? id)
         {
-            var obj = _db.Costs.Find(id);
-
-            if (obj == null) 
+            //var obj = _db.Costs.Find(id);
+            if (id != 0) 
             {
-                return NotFound();
-            }
+                var obj = _db.Costs.FirstOrDefault(c => c.Id == id);
+              
 
-            _db.Costs.Remove(obj);
-            _db.SaveChanges();
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+
+                _db.Costs.Remove(obj);
+                _db.SaveChanges();
+            }            
 
             return RedirectToAction("Index");
         }
@@ -78,7 +106,25 @@ namespace CostApplication.Controllers
                 return NotFound();
             }
 
+            //var obj = from c in _db.Costs
+            //            select new CostDto()
+            //            {
+            //                Id = c.Id,
+            //                Date = c.Date,
+            //                TypeOfCosts = c.TypeOfCosts,
+            //                Amount = c.Amount,
+            //                Description = c.Description                            
+            //            };
+
             var obj = _db.Costs.Find(id);
+
+            var objDto = new CostDto();
+
+            objDto.Id = obj.Id;
+            objDto.Date = obj.Date;
+            objDto.TypeOfCosts = obj.TypeOfCosts;
+            objDto.Amount = obj.Amount;
+            objDto.Description = obj.Description;
 
             if (obj == null)
             {
@@ -88,15 +134,38 @@ namespace CostApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Cost obj)
+        public IActionResult Edit(CostDto objDto)
         {
+            //var objTemp = from c in _db.Costs
+            //              where c.Id.Equals(objDto.Id)
+            //              select new Cost
+            //              {
+            //                  Id = objDto.Id,
+            //                  Date = objDto.Date,
+            //                  TypeOfCosts = objDto.TypeOfCosts,
+            //                  Amount = objDto.Amount,
+            //                  Description = objDto.Description,
+            //                  ModifiedOn = DateTime.Now
+            //              };
+            //Cost obj = objTemp.SingleOrDefault();
+            //var obj = (Cost)objTemp.Cast<Cost>();
+
+            var obj = _db.Costs.FirstOrDefault(o => o.Id == objDto.Id);
+
+            obj.Date = objDto.Date;
+            obj.TypeOfCosts = objDto.TypeOfCosts;
+            obj.Amount = objDto.Amount;
+            obj.Description = objDto.Description;
+            obj.ModifiedOn = DateTime.Now;
+
+
             if (ModelState.IsValid)
             {
                 _db.Costs.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(obj);
+            return View(objDto);
         }
     }
 }
