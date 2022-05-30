@@ -12,7 +12,7 @@ namespace CostApplication.DTO
         public int Id { get; set; }
 
         [Required]
-        [DisplayName("Created on")]
+        [DisplayName("Record created")]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using CostApplication.Data;
+﻿using AutoMapper;
+using CostApplication.Data;
 using CostApplication.DTO;
 using CostApplication.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,21 +12,27 @@ namespace CostApplication.Controllers
     public class CostController : Controller
     {
         private readonly AppDBContext _db;
-        public CostController(AppDBContext db)
+        private readonly IMapper _mapper;
+
+        public CostController(AppDBContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
         [HttpGet]
         public IActionResult Index()
         {
-            var costs = _db.Costs.Select(c => new CostDto()
-            {
-                Id = c.Id,
-                Date = c.Date,
-                TypeOfCosts = c.TypeOfCosts,
-                Amount = c.Amount,
-                Description = c.Description
-            }).ToList();
+            //var costs = _db.Costs.Select(c => new CostDto()
+            //{
+            //    Id = c.Id,
+            //    Date = c.Date,
+            //    TypeOfCosts = c.TypeOfCosts,
+            //    Amount = c.Amount,
+            //    Description = c.Description
+            //}).ToList();
+
+            var costsFromDb = _db.Costs.ToList();
+            var costs = _mapper.Map<List<CostDto>>(costsFromDb);
 
             return View(costs);
         }
@@ -41,18 +48,21 @@ namespace CostApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var obj = new Cost
-                {
-                    Date = objDto.Date,
-                    TypeOfCosts = objDto.TypeOfCosts,
-                    Amount = objDto.Amount,
-                    CreatedOn = DateTime.Now,
-                    ModifiedOn = null,
-                    Description = objDto.Description,
-                    SensetiveData = "Sensitivadata"
-                };
+                //var obj = new Cost
+                //{
+                //    Date = objDto.Date,
+                //    TypeOfCosts = objDto.TypeOfCosts,
+                //    Amount = objDto.Amount,
+                //    CreatedOn = DateTime.Now,
+                //    ModifiedOn = null,
+                //    Description = objDto.Description,
+                //    SensetiveData = "Sensitivadata"
+                //};
+              
+                var obj = _mapper.Map<Cost>(objDto);
                 _db.Costs.Add(obj);
                 _db.SaveChanges();
+                
                 return RedirectToAction("Index");
             }
             return View();
@@ -105,19 +115,21 @@ namespace CostApplication.Controllers
             }
             var obj = _db.Costs.Find(id);
 
-            var objDto = new CostDto();
+            //var objDto = new CostDto();
 
-            objDto.Id = obj.Id;
-            objDto.Date = obj.Date;
-            objDto.TypeOfCosts = obj.TypeOfCosts;
-            objDto.Amount = obj.Amount;
-            objDto.Description = obj.Description;
+            //objDto.Id = obj.Id;
+            //objDto.Date = obj.Date;
+            //objDto.TypeOfCosts = obj.TypeOfCosts;
+            //objDto.Amount = obj.Amount;
+            //objDto.Description = obj.Description;
 
-            if (obj == null)
+            var objView = _mapper.Map<CostDto>(obj);
+
+            if (objView == null)
             {
                 return NotFound();
             }
-            return View(obj);
+            return View(objView);
         }
 
         [HttpPost]

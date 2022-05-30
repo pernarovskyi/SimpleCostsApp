@@ -11,7 +11,6 @@ namespace CostApplication.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        [DisplayName("Created on")]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
@@ -22,7 +21,6 @@ namespace CostApplication.Models
         public DateTime? ModifiedOn { get; set; } // hide from front-end
 
         [Required]
-        [DisplayName("Type of Costs")]
         public TypeOfCosts TypeOfCosts { get; set; }
 
         [Required]
