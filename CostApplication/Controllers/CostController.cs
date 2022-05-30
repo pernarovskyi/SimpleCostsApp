@@ -47,19 +47,12 @@ namespace CostApplication.Controllers
         public IActionResult Create(CostDto objDto)
         {
             if (ModelState.IsValid)
-            {
-                //var obj = new Cost
-                //{
-                //    Date = objDto.Date,
-                //    TypeOfCosts = objDto.TypeOfCosts,
-                //    Amount = objDto.Amount,
-                //    CreatedOn = DateTime.Now,
-                //    ModifiedOn = null,
-                //    Description = objDto.Description,
-                //    SensetiveData = "Sensitivadata"
-                //};
-              
+            {                           
                 var obj = _mapper.Map<Cost>(objDto);
+
+                obj.CreatedOn = DateTime.Now;
+                obj.SensetiveData = "SensitiveData";
+
                 _db.Costs.Add(obj);
                 _db.SaveChanges();
                 
@@ -115,37 +108,25 @@ namespace CostApplication.Controllers
             }
             var obj = _db.Costs.Find(id);
 
-            //var objDto = new CostDto();
+            var objDto = _mapper.Map<CostDto>(obj);
 
-            //objDto.Id = obj.Id;
-            //objDto.Date = obj.Date;
-            //objDto.TypeOfCosts = obj.TypeOfCosts;
-            //objDto.Amount = obj.Amount;
-            //objDto.Description = obj.Description;
-
-            var objView = _mapper.Map<CostDto>(obj);
-
-            if (objView == null)
+            if (objDto == null)
             {
                 return NotFound();
             }
-            return View(objView);
+            return View(objDto);
         }
 
         [HttpPost]
         public IActionResult Edit(CostDto objDto)
-        {
-            var obj = _db.Costs.FirstOrDefault(o => o.Id == objDto.Id);
-
-            obj.Date = objDto.Date;
-            obj.TypeOfCosts = objDto.TypeOfCosts;
-            obj.Amount = objDto.Amount;
-            obj.Description = objDto.Description;
-            obj.ModifiedOn = DateTime.Now;
-
-
+        { 
             if (ModelState.IsValid)
             {
+                Cost obj = _db.Costs.Find(objDto.Id);
+
+                _mapper.Map<Cost>(objDto);
+                obj.ModifiedOn = DateTime.Now;
+
                 _db.Costs.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
