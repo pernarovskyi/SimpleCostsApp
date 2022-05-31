@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CostApplication.Data
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext : DbContext, IAppDBContext
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {

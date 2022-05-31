@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using CostApplication.DTO;
+using CostApplication.Repositories;
 
 namespace CostApplication
 {
@@ -25,6 +26,11 @@ namespace CostApplication
             services.AddDbContext<AppDBContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
+
+            services.AddScoped<IAppDBContext, AppDBContext>();
+
+
+            services.AddScoped<ICostRepository, CostRepository>();
             services.AddControllersWithViews();
             services.AddMvc(options => {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((_) => "The field is required.");

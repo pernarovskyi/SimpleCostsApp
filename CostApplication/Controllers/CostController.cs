@@ -2,6 +2,7 @@
 using CostApplication.Data;
 using CostApplication.DTO;
 using CostApplication.Models;
+using CostApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,27 +12,19 @@ namespace CostApplication.Controllers
 {
     public class CostController : Controller
     {
-        private readonly AppDBContext _db;
+        private readonly ICostRepository costRepository;
         private readonly IMapper _mapper;
 
-        public CostController(AppDBContext db, IMapper mapper)
+        public CostController(ICostRepository costRepository, IMapper mapper)
         {
-            _db = db;
+            this.costRepository = costRepository;
             _mapper = mapper;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
-            //var costs = _db.Costs.Select(c => new CostDto()
-            //{
-            //    Id = c.Id,
-            //    Date = c.Date,
-            //    TypeOfCosts = c.TypeOfCosts,
-            //    Amount = c.Amount,
-            //    Description = c.Description
-            //}).ToList();
-
-            var costsFromDb = _db.Costs.ToList();
+            var costsFromDb = costRepository.GetAll();
             var costs = _mapper.Map<List<CostDto>>(costsFromDb);
 
             return View(costs);
@@ -47,15 +40,9 @@ namespace CostApplication.Controllers
         public IActionResult Create(CostDto objDto)
         {
             if (ModelState.IsValid)
-            {                           
+            {
                 var obj = _mapper.Map<Cost>(objDto);
-
-                obj.CreatedOn = DateTime.Now;
-                obj.SensetiveData = "SensitiveData";
-
-                _db.Costs.Add(obj);
-                _db.SaveChanges();
-                
+                costRepository.Add(obj);
                 return RedirectToAction("Index");
             }
             return View();
@@ -69,8 +56,7 @@ namespace CostApplication.Controllers
                 return NotFound();
             }
 
-            var obj = _db.Costs.Find(id);
-
+            var obj = costRepository.Get(id.Value);
             if (obj == null)
             {
                 return NotFound();
@@ -81,21 +67,7 @@ namespace CostApplication.Controllers
         [HttpPost]
         public IActionResult DeleteRecord(int? id)
         {
-            //var obj = _db.Costs.Find(id);
-            if (id != 0)
-            {
-                var obj = _db.Costs.FirstOrDefault(c => c.Id == id);
-
-
-                if (obj == null)
-                {
-                    return NotFound();
-                }
-
-                _db.Costs.Remove(obj);
-                _db.SaveChanges();
-            }
-
+            costRepository.Delete(id ?? 0);
             return RedirectToAction("Index");
         }
 
@@ -106,29 +78,23 @@ namespace CostApplication.Controllers
             {
                 return NotFound();
             }
-            var obj = _db.Costs.Find(id);
+            var obj = costRepository.Get(id.Value);
 
-            var objDto = _mapper.Map<CostDto>(obj);
-
-            if (objDto == null)
+            if (obj == null)
             {
                 return NotFound();
             }
+            var objDto = _mapper.Map<CostDto>(obj);
             return View(objDto);
         }
 
         [HttpPost]
         public IActionResult Edit(CostDto objDto)
-        { 
+        {
             if (ModelState.IsValid)
             {
-                Cost obj = _db.Costs.Find(objDto.Id);
-
-                _mapper.Map<Cost>(objDto);
-                obj.ModifiedOn = DateTime.Now;
-
-                _db.Costs.Update(obj);
-                _db.SaveChanges();
+                var entry = _mapper.Map<Cost>(objDto);
+                costRepository.Update(entry);
                 return RedirectToAction("Index");
             }
             return View(objDto);
