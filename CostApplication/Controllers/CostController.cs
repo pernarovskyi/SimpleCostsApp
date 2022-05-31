@@ -21,16 +21,7 @@ namespace CostApplication.Controllers
         }
         [HttpGet]
         public IActionResult Index()
-        {
-            //var costs = _db.Costs.Select(c => new CostDto()
-            //{
-            //    Id = c.Id,
-            //    Date = c.Date,
-            //    TypeOfCosts = c.TypeOfCosts,
-            //    Amount = c.Amount,
-            //    Description = c.Description
-            //}).ToList();
-
+        {   
             var costsFromDb = _db.Costs.ToList();
             var costs = _mapper.Map<List<CostDto>>(costsFromDb);
 
@@ -124,11 +115,12 @@ namespace CostApplication.Controllers
             {
                 Cost obj = _db.Costs.Find(objDto.Id);
 
-                _mapper.Map<Cost>(objDto);
+                _mapper.Map(objDto, obj);
                 obj.ModifiedOn = DateTime.Now;
 
                 _db.Costs.Update(obj);
                 _db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
             return View(objDto);
