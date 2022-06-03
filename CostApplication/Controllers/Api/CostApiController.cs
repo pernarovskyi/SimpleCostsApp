@@ -59,6 +59,21 @@ namespace CostApplication.Controllers.Api
             var result = _mapper.Map<CostDto>(resultCost);
             return Ok(result);
         }
+
+        [HttpDelete]
+        [Route("delete/{id:min(1)}")]
+        public ActionResult<CostDto> DeleteCost(int id)
+        {
+            var result = _costRepository.Get(id);
+
+            if (result == null)
+            {
+                return NotFound($"Cost with Id = {id} not found.");
+            }
+          
+            _costRepository.Delete(id);
+            return Ok(result);
+        }
     }
 }
 
