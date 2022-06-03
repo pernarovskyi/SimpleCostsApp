@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using CostApplication.DTO;
 using CostApplication.Repositories;
+using UserApplication.Repositories;
 
 namespace CostApplication
 {
@@ -31,6 +32,8 @@ namespace CostApplication
 
 
             services.AddScoped<ICostRepository, CostRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddControllersWithViews();
             services.AddMvc(options => {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((_) => "The field is required.");

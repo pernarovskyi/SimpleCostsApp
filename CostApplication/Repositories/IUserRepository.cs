@@ -2,7 +2,7 @@
 
 namespace CostApplication.Repositories
 {
-    public interface ICostRepository : IRepository<Cost>
+    public interface IUserRepository : IRepository<User>
     {
     }
 }

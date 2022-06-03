@@ -1,6 +1,6 @@
 ﻿using CostApplication.Models;
 using Microsoft.EntityFrameworkCore;
-
+using System.Collections.Generic;
 
 namespace CostApplication.Data
 {
@@ -11,6 +11,7 @@ namespace CostApplication.Data
 
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Cost> Costs { get; set; }
     }
 }
