@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace CostApplication.Controllers.Api
 {
+    
     [Route("api/cost")]
     [ApiController]
     public class CostApiController : ControllerBase
