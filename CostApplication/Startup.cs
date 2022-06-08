@@ -9,6 +9,9 @@ using AutoMapper;
 using CostApplication.DTO;
 using CostApplication.Repositories;
 using UserApplication.Repositories;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CostApplication.Auth;
 
 namespace CostApplication
 {
@@ -33,6 +36,13 @@ namespace CostApplication
 
             services.AddScoped<ICostRepository, CostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            var key = Encoding.UTF8.GetBytes("somekey");
+
+            services.AddAuthentication().
+                AddScheme<CookieTokenAuthenticationOptions, CustomHandler>("Default", o => {});
+
+            services.AddScoped<ICustomTokenService, CustomTokenService>();
 
             services.AddControllersWithViews();
             services.AddMvc(options => {
@@ -59,6 +69,7 @@ namespace CostApplication
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

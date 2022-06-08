@@ -26,6 +26,7 @@ namespace CostApplication.Controllers
         {
             var costsFromDb = costRepository.GetAll();
             var costs = _mapper.Map<List<CostDto>>(costsFromDb);
+            Response.ContentType = "application/json";
 
             return View(costs);
         }
