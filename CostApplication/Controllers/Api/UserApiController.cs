@@ -1,21 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CostApplication.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace CostApplication.Controllers.Api
 {
     [Route("api/user")]
+    [OwnAuthorize]
     public class UserApiController : ControllerBase
     {
 
         [HttpPost]
         [Route("login")]
-        public IActionResult Login()
+        [AllowAnonymous]
+        public ActionResult Login()
+        {            
+            return Ok();
+        }
+
+        [HttpPost("Logout")]
+        public ActionResult Logout()
         {
-            var token = "";
+            return Ok();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
             return Ok();
         }
     }

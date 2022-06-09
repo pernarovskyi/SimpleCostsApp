@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CostApplication.Auth;
 using CostApplication.DTO;
 using CostApplication.Models;
 using CostApplication.Repositories;
@@ -9,6 +10,7 @@ namespace CostApplication.Controllers.Api
 {
     [Route("api/cost")]
     [ApiController]
+    [OwnAuthorize]
     public class CostApiController : ControllerBase
     {
         private readonly ICostRepository _costRepository;

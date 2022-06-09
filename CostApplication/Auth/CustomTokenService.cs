@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CostApplication
+namespace CostApplication.Auth
 {
     public class CustomTokenService : ICustomTokenService
     {
