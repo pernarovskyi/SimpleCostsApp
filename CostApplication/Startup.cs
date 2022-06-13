@@ -9,6 +9,9 @@ using AutoMapper;
 using CostApplication.DTO;
 using CostApplication.Repositories;
 using UserApplication.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using CostApplication.Auth;
 
 namespace CostApplication
 {
@@ -38,6 +41,11 @@ namespace CostApplication
             services.AddMvc(options => {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((_) => "The field is required.");
             });
+
+            services.AddAuthentication("CostAuthScheme")                
+                    .AddScheme<CostAuthSchemeOptions, CostAuthHandler>(
+                        "CostAuthScheme", options => { });
+
             services.AddAutoMapper(typeof(Startup));
         }
 
@@ -59,6 +67,7 @@ namespace CostApplication
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
