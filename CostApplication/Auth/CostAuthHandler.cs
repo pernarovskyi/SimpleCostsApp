@@ -40,6 +40,7 @@ namespace CostApplication.Auth
 
 
 
+
             var claims = new[] { new Claim(ClaimTypes.Name, "TestCostClaim") };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
