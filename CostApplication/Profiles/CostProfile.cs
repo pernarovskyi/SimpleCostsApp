@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CostApplication.DTO;
 using CostApplication.Models;
-using System;
+
 
 namespace CostApplication.Profiles
 {
@@ -9,8 +9,14 @@ namespace CostApplication.Profiles
     {
         public CostProfile()
         {
-            CreateMap<Cost, CostDto>().ReverseMap();
-            
+            CreateMap<Cost, CostDto>();
+            CreateMap<CostDto, Cost>()
+                .ForMember(c => c.Id, opt => opt.Ignore());
+
+
+            CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>()
+                .ForMember(u => u.Id, opt => opt.Ignore());
         }
     }
 }

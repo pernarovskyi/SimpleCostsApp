@@ -35,6 +35,21 @@ namespace CostApplication
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddControllersWithViews();
+
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            //{
+            //    options.RequireHttpsMetadata = false;
+            //    options.SaveToken = true;
+            //    options.TokenValidationParameters = new TokenValidationParameters()
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidAudience = builder.Configuration["Jwt:Audience"],
+            //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            //    };
+            //});
+
             services.AddMvc(options => {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((_) => "The field is required.");
             });

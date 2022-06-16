@@ -15,8 +15,7 @@ namespace CostApplication.DTO
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        public DateTime AddedDate { get; set; }
-
-        public DateTime? LastVisitedDate { get; set; }
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
     }
 }

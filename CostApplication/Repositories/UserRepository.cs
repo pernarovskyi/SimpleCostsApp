@@ -51,5 +51,10 @@ namespace UserApplication.Repositories
             }
             return obj;
         }
+
+        public bool CheckIfExistsByEmail(string email)
+        {
+            return _appDbContext.Users.Any(u => u.Email == email);
+        }
     }
 }

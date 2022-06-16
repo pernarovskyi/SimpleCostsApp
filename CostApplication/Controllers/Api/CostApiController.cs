@@ -2,22 +2,27 @@
 using CostApplication.DTO;
 using CostApplication.Models;
 using CostApplication.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace CostApplication.Controllers.Api
 {
     [Route("api/cost")]
     [ApiController]
+    [Authorize]
     public class CostApiController : ControllerBase
     {
         private readonly ICostRepository _costRepository;
         private readonly IMapper _mapper;
+        public IConfiguration _configuration;
 
-        public CostApiController(ICostRepository costRepository, IMapper mapper)
+        public CostApiController(ICostRepository costRepository, IMapper mapper, IConfiguration config)
         {
             _costRepository = costRepository;
             _mapper = mapper;
+            _configuration = config;
         }
 
         [HttpGet]
@@ -47,6 +52,7 @@ namespace CostApplication.Controllers.Api
             var cost = _mapper.Map<Cost>(model);
             var resultCost = _costRepository.Add(cost);
             var result = _mapper.Map<CostDto>(resultCost);
+            
             return Ok(result);
         }
 
