@@ -2,26 +2,29 @@
 using CostApplication.DTO;
 using CostApplication.Models;
 using CostApplication.Repositories;
-using Microsoft.AspNetCore.Http;
+using CostApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CostApplication.Controllers.Api
 {
+    [Authorize]
     [Route("api/users")]
     [ApiController]
     public class UserApiController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IJwtTokenBuilder _jwtTokenBuilder;
         
-        public UserApiController(IUserRepository userRepository, IMapper mapper)
+        public UserApiController(IUserRepository userRepository, IMapper mapper, IJwtTokenBuilder jwtTokenBuilder)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _jwtTokenBuilder = jwtTokenBuilder;
         }
 
         [HttpGet]
@@ -71,6 +74,25 @@ namespace CostApplication.Controllers.Api
             return model;
         }
 
-   
+        [HttpPost, AllowAnonymous]
+        [Route("login")]
+        public ActionResult Login(UserDto user) 
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            var entryUser = _userRepository.CheckUserCredentials(user.Email, user.Password);
+
+            if (entryUser != null)
+            {
+               return Ok(_jwtTokenBuilder.BuildToken(entryUser));
+            }
+            else 
+            { 
+                return NotFound("Invalid credentials!"); 
+            }        
+        }
     }
 }
