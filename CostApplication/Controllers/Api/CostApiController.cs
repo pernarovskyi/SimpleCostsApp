@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 namespace CostApplication.Controllers.Api
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/cost")]
-    [ApiController]
-    [Authorize]
+    [ApiController]    
     public class CostApiController : ControllerBase
     {
         private readonly ICostRepository _costRepository;

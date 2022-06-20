@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace CostApplication.Controllers.Api
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/users")]
     [ApiController]
     public class UserApiController : ControllerBase
