@@ -4,7 +4,6 @@ using CostApplication.Models;
 using CostApplication.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace CostApplication.Controllers.Api
@@ -15,14 +14,12 @@ namespace CostApplication.Controllers.Api
     public class CostApiController : ControllerBase
     {
         private readonly ICostRepository _costRepository;
-        private readonly IMapper _mapper;
-        public IConfiguration _configuration;
+        private readonly IMapper _mapper;        
 
-        public CostApiController(ICostRepository costRepository, IMapper mapper, IConfiguration config)
+        public CostApiController(ICostRepository costRepository, IMapper mapper)
         {
             _costRepository = costRepository;
-            _mapper = mapper;
-            _configuration = config;
+            _mapper = mapper;            
         }
 
         [HttpGet]

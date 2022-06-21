@@ -18,13 +18,14 @@ namespace CostApplication.Controllers.Api
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly IJwtTokenBuilder _jwtTokenBuilder;
         
-        public UserApiController(IUserRepository userRepository, IMapper mapper, IJwtTokenBuilder jwtTokenBuilder)
+        public UserApiController(
+            IUserRepository userRepository, 
+            IMapper mapper
+            )
         {
             _userRepository = userRepository;
-            _mapper = mapper;
-            _jwtTokenBuilder = jwtTokenBuilder;
+            _mapper = mapper;          
         }
 
         [HttpGet]
@@ -53,46 +54,6 @@ namespace CostApplication.Controllers.Api
             _mapper.Map(user, userDto);
             
             return userDto;
-        }
-
-        [HttpPost]
-        public ActionResult<UserDto> Add(UserDto model)
-        {
-            if (_userRepository.CheckIfExistsByEmail(model.Email))
-            {
-                return BadRequest();
-            }
-
-            User userToAdd = new User()
-            {
-                AddedDate = DateTime.UtcNow
-            };
-
-            _mapper.Map(model, userToAdd);
-            _userRepository.Add(userToAdd);
-            
-            return model;
-        }
-
-        [HttpPost, AllowAnonymous]
-        [Route("login")]
-        public ActionResult Login(UserDto user) 
-        {
-            if (user == null)
-            {
-                return BadRequest();
-            }
-
-            var entryUser = _userRepository.CheckUserCredentials(user.Email, user.Password);
-
-            if (entryUser != null)
-            {
-               return Ok(_jwtTokenBuilder.BuildToken(entryUser));
-            }
-            else 
-            { 
-                return NotFound("Invalid credentials!"); 
-            }        
         }
     }
 }

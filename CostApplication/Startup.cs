@@ -11,11 +11,12 @@ using CostApplication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CostApplication.Models;
 
 namespace CostApplication
 {
     public class Startup
-    {
+    {        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,28 +31,31 @@ namespace CostApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            AuthenticationConfiguration authenticationConfiguration = new AuthenticationConfiguration();
+            Configuration.Bind("Jwt", authenticationConfiguration);
+            services.AddSingleton(authenticationConfiguration);
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationConfiguration.Key)),
+                        ValidIssuer = authenticationConfiguration.Issuer,
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true
+                    };
+            });            
+
             services.AddScoped<IAppDBContext, AppDBContext>();
-
-
             services.AddScoped<ICostRepository, CostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IJwtTokenBuilder, JwtTokenBuilder>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddSingleton<IPasswordHashService, BCryptPasswordHashService>();
 
-            services.AddControllersWithViews();
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["Jwt:Audience"],
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                };
-            });
+            services.AddControllersWithViews();          
 
             services.AddMvc(options => {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((_) => "The field is required.");

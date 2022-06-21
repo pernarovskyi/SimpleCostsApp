@@ -3,8 +3,7 @@
 namespace CostApplication.Repositories
 {
     public interface IUserRepository : IRepository<User>
-    {
-        public bool CheckIfExistsByEmail(string email);
-        public User CheckUserCredentials(string email, string password);        
+    {        
+        public User GetByEmail(string email);             
     }
 }

@@ -3,8 +3,8 @@
 
 namespace CostApplication.Services
 {
-    public interface IJwtTokenBuilder
+    public interface IJwtTokenGenerator
     {
-        string BuildToken(User user);
+        string GenerateToken(User user);
     }
 }

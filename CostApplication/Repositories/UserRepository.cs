@@ -50,18 +50,11 @@ namespace UserApplication.Repositories
                 _appDbContext.SaveChanges();
             }
             return obj;
-        }
+        }    
 
-        public bool CheckIfExistsByEmail(string email)
+        public User GetByEmail(string email)
         {
-            return _appDbContext.Users.Any(u => u.Email == email);
-        }
-
-        public User CheckUserCredentials(string email, string password)
-        {
-            var user = _appDbContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
-
-            return user;
-        }        
+            return _appDbContext.Users.FirstOrDefault(u => u.Email == email);
+        }              
     }
 }
