@@ -26,8 +26,7 @@ namespace CostApplication.Services
         {
             if (user != null)
             {
-                var claims = new List<Claim> {
-                        //new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                var claims = new List<Claim> {                        
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("Email", user.Email)

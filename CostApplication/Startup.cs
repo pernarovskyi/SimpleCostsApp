@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AutoMapper;
-using CostApplication.DTO;
 using CostApplication.Repositories;
 using UserApplication.Repositories;
 using CostApplication.Services;
