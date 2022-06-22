@@ -36,7 +36,7 @@ namespace CostApplication
             services.AddSingleton(authenticationConfiguration);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
-                {
+            {
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters()
@@ -45,7 +45,7 @@ namespace CostApplication
                         ValidIssuer = authenticationConfiguration.Issuer,
                         ValidateIssuerSigningKey = true,
                         ValidateIssuer = true,
-                        ValidateAudience = true
+                        ValidAudience = authenticationConfiguration.Audience
                     };
             });            
 
@@ -53,7 +53,7 @@ namespace CostApplication
             services.AddScoped<ICostRepository, CostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddSingleton<IPasswordHashService, BCryptPasswordHashService>();
+            services.AddScoped<IPasswordHashService, BCryptPasswordHashService>();
 
             services.AddControllersWithViews();          
 

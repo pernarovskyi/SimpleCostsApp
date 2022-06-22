@@ -30,10 +30,10 @@ namespace CostApplication.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Key));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                _configuration.Issuer,
-                _configuration.Audience,
+                issuer: _configuration.Issuer,
+                audience: _configuration.Audience,
                 claims,
-                DateTime.UtcNow.AddMinutes(_configuration.ExpirationsMinutes),
+                expires: DateTime.UtcNow.AddMinutes(_configuration.ExpirationsMinutes),
                 signingCredentials: signIn);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
