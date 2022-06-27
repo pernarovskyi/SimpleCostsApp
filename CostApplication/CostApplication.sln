@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32510.428
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CostApplication", "CostApplication.csproj", "{6AA1EE33-6190-430C-A9E3-F5DA89693062}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CostApplication", "CostApplication.csproj", "{6AA1EE33-6190-430C-A9E3-F5DA89693062}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CostApplication.Tests", "..\CostApplication.Tests\CostApplication.Tests.csproj", "{2DFCDE1A-CDA6-4250-BBE0-7886E8A887C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6AA1EE33-6190-430C-A9E3-F5DA89693062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AA1EE33-6190-430C-A9E3-F5DA89693062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AA1EE33-6190-430C-A9E3-F5DA89693062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DFCDE1A-CDA6-4250-BBE0-7886E8A887C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DFCDE1A-CDA6-4250-BBE0-7886E8A887C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DFCDE1A-CDA6-4250-BBE0-7886E8A887C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DFCDE1A-CDA6-4250-BBE0-7886E8A887C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
