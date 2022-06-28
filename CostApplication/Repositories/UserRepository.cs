@@ -1,6 +1,7 @@
 ﻿using CostApplication.Data;
 using CostApplication.Models;
 using CostApplication.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,6 +18,7 @@ namespace UserApplication.Repositories
 
         public User Add(User user)
         {
+            user.AddedDate = DateTime.UtcNow;
             _appDbContext.Users.Add(user);
             _appDbContext.SaveChanges();
             return user;
