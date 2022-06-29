@@ -6,23 +6,25 @@ using CostApplication.Services;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web.Http.Results;
 
 namespace CostApplication.Tests.Controllers.Api
 {
     [TestFixture]
     class AuthenticationControllerTests
-    {
-        private AuthenticationApiController _controller;
-
+    {      
         [SetUp]
         public void Setup()
         {
         }
 
-
         [Test]
-        public void TestLogin()
+        public void Login_PassLoginUser_ShouldBeOk()
         {
+            //Arrange
             var userRepoMock = new Mock<IUserRepository>();
             userRepoMock
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
@@ -44,23 +46,89 @@ namespace CostApplication.Tests.Controllers.Api
             jwtTokenGeneratorMock
                 .Setup(x => x.GenerateToken(It.IsAny<User>()))
                 .Returns("Token Generated.");
-            _controller = new AuthenticationApiController(userRepoMock.Object, pwdHasherMock.Object, jwtTokenGeneratorMock.Object);
+            
+            var sut = new AuthenticationApiController(userRepoMock.Object, pwdHasherMock.Object, jwtTokenGeneratorMock.Object);
+            //Act
+            var result = sut.Login(new LoginRequest());
 
-            var result = _controller.Login(new LoginRequest());
 
-            Assert.That(result, Is.Not.Null);
-            Assert.DoesNotThrow(() =>
-            {
-                userRepoMock.Verify(mock => mock.GetByEmail(It.IsAny<string>()), Times.Once());
-            });
-            Assert.DoesNotThrow(() =>
-            {
-                pwdHasherMock.Verify(mock => mock.VerifyPassword(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
-            });
-            Assert.DoesNotThrow(() =>
-            {
-                jwtTokenGeneratorMock.Verify(mock => mock.GenerateToken(It.IsAny<User>()), Times.Once());
-            });
+            //Assert
+            Assert.That(result, Is.Not.Null);            
+
+            userRepoMock.Verify(mock => mock.GetByEmail(It.IsAny<string>()), Times.Once());   
+            pwdHasherMock.Verify(mock => mock.VerifyPassword(It.IsAny<string>(), It.IsAny<string>()), Times.Once()); 
+            jwtTokenGeneratorMock.Verify(mock => mock.GenerateToken(It.IsAny<User>()), Times.Once());            
+        }
+
+        [Test]
+        public void Login_LoginRequestModelValidation_ShouldBeOk()
+        {
+            //Arrange
+            var sut = new LoginRequest
+            { 
+                Email = "test@test.com",
+                Password = "testPassword"
+            };
+
+            //Act
+            var context = new ValidationContext(sut, null, null);
+            var results = new List<ValidationResult>();
+            var isModelStateValid = Validator.TryValidateObject(sut, context, results, true);
+
+            //Assert
+            Assert.IsTrue(isModelStateValid);
+        }
+
+        [Test]
+        public void Login_LoginRequestModelValidation_ShouldBeFalse()
+        {
+            //Arrange
+            var sut = new LoginRequest();
+         
+
+            //Act
+            var context = new ValidationContext(sut, null, null);
+            var results = new List<ValidationResult>();
+            var isModelStateValid = Validator.TryValidateObject(sut, context, results, true);
+
+            //Assert
+            Assert.IsFalse(isModelStateValid);
+        }
+
+        [Test]
+        public void Login_PassIncorectModel_ShouldBeFalse()
+        {
+            //Arrange
+            var userRepoMock = new Mock<IUserRepository>();
+            var pwdHasherMock = new Mock<IPasswordHashService>();
+            var jwtTokenGeneratorMock = new Mock<IJwtTokenGenerator>();
+
+            var sut = new AuthenticationApiController(userRepoMock.Object, pwdHasherMock.Object, jwtTokenGeneratorMock.Object);
+            sut.ModelState.AddModelError("test","test");
+            //Act
+            _ = sut.Login(new LoginRequest());
+            var modelState = sut.ModelState;
+
+            //Assert
+            Assert.IsFalse(modelState.IsValid);
+        }
+
+        [Test]
+        public void Login_PassCorectModel_ShouldBeOk()
+        {
+            //Arrange
+            var userRepoMock = new Mock<IUserRepository>();
+            var pwdHasherMock = new Mock<IPasswordHashService>();
+            var jwtTokenGeneratorMock = new Mock<IJwtTokenGenerator>();
+
+            var sut = new AuthenticationApiController(userRepoMock.Object, pwdHasherMock.Object, jwtTokenGeneratorMock.Object);
+            sut.ModelState.Clear();
+            //Act
+            _ = sut.Login(new LoginRequest() { Email = "test@test.com", Password = "test"});
+            var modelState = sut.ModelState;
+
+            //Assert
+            Assert.IsTrue(modelState.IsValid);
         }
     }
 }

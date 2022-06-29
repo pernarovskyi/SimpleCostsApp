@@ -16,13 +16,12 @@ namespace CostApplication.Tests.Repositories
     class UserRepositoryTests
     {
         [Test]
-        public async Task Add() 
+        public async Task Add_PassCorrectData_ShouldBeOk() 
         {
             var options = new DbContextOptionsBuilder<AppDBContext>()
                 .UseInMemoryDatabase(databaseName: "UsersListDatabase")
                 .Options;
 
-            // Insert seed data into the database using one instance of the context
             using (var context = new AppDBContext(options))
             {
                 var repo = new UserRepository(context);
@@ -43,32 +42,39 @@ namespace CostApplication.Tests.Repositories
         }
 
         [Test]
-        public void GetAll_Returns_UserList() 
+        public void GetAll_CallingWithoutParameters_ShouldReturnUsersList() 
         {
+            //Arrange
             var options = new DbContextOptionsBuilder<AppDBContext>()
                 .UseInMemoryDatabase(databaseName: "UsersListDatabase")
                 .Options;
+            var dbContext = new AppDBContext(options);
 
-            using (var context = new AppDBContext(options))
-            {
-                
-                var repo = new UserRepository(context);
+            var sut = new UserRepository(dbContext);
 
-                repo.Add(new User { Id = 100, Email = "test1@gmail.com", PasswordHash = "testUser1HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-8) });
-                repo.Add(new User { Id = 200, Email = "test2@gmail.com", PasswordHash = "testUser2HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-7) });
-                repo.Add(new User { Id = 300, Email = "test3@gmail.com", PasswordHash = "testUser3HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-6) });
-                repo.Add(new User { Id = 400, Email = "test4@gmail.com", PasswordHash = "testUser4HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-5) });
+            sut.Add(new User { Id = 100, Email = "test1@gmail.com", PasswordHash = "testUser1HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-8) });
+            sut.Add(new User { Id = 200, Email = "test2@gmail.com", PasswordHash = "testUser2HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-7) });
+            sut.Add(new User { Id = 300, Email = "test3@gmail.com", PasswordHash = "testUser3HashedPassword", AddedDate = DateTime.UtcNow.AddMinutes(-6) });
+            
 
+            //Act
+            List<User> users = sut.GetAll();
 
-                List<User> users = repo.GetAll().ToList();
+            //Assert
+            
+            var userId100 = users.Any(u => u.Id == 100 && u.Email == "test1@gmail.com");
+            var userId200 = users.Any(u => u.Id == 200 && u.Email == "test2@gmail.com");
+            var userId300 = users.Any(u => u.Id == 300 && u.Email == "test3@gmail.com");
 
-                Assert.That(users.Count, Is.EqualTo(4));
-            }
+            Assert.IsTrue(userId100);
+            Assert.IsTrue(userId200);
+            Assert.IsTrue(userId300);            
         }
 
         [Test]
-        public void GetById_Return_User()
+        public void GetById_CallingWithoutParameters_ShouldBeUserObject()
         {
+            //Arrange
             var user = new User() 
             {
                 Id = 101,
@@ -78,21 +84,24 @@ namespace CostApplication.Tests.Repositories
             };
 
             Mock<IUserRepository> mock = new Mock<IUserRepository>();
+
+            //Act
             mock.Setup(m => m.Get(1)).Returns(user);
 
+            //Assert
             Assert.NotNull(mock.Object.Get(1));
             Assert.That(user.Email, Is.EqualTo("test@test.com"));
         }
 
         [Test]
-        public void Update_ReturnUserWithUpdatedEmail_Success()
+        public void Update_PassObjectWithUpdatedUserEmail_ShouldUpdatedEmailOk()
         {
             //Arrange
             Mock<IUserRepository> mock = new Mock<IUserRepository>();
-            Mock<IAppDBContext> context = new Mock<IAppDBContext>();
+            
             var user = new User()
             {
-                Id = 1,
+                Id = 102,
                 Email = "test@test.com",
                 PasswordHash = "kjbn3465bkjn3n4kj345jbnkj346hjkh",
                 AddedDate = DateTime.UtcNow.AddMinutes(-2)                
@@ -100,21 +109,18 @@ namespace CostApplication.Tests.Repositories
 
             var expectedUser = new User
             {
-                Id = 1,
+                Id = 102,
                 Email = "test@updatedTest.com",
                 PasswordHash = "kjbn3465bkjn3n4kj345jbnkj346hjkh"                                
             };
 
-
             //Act
-            context.Object.Users.Add(user);
-            //mock.Setup(u => u.Add(user));
+            
             mock.Setup(u => u.Update(expectedUser));
-
 
             var result = mock.SetupGet(u => u.GetByEmail("test@updatedTest.com"));
             //Assert
-            //Assert.AreNotEqual(mock.Object.GetByEmail("test@test.com"), user.Email);
+            
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<User>());
             Assert.AreSame(result, expectedUser);
