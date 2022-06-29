@@ -104,8 +104,9 @@ namespace CostApplication.Tests.Controllers.Api
             var jwtTokenGeneratorMock = new Mock<IJwtTokenGenerator>();
 
             var sut = new AuthenticationApiController(userRepoMock.Object, pwdHasherMock.Object, jwtTokenGeneratorMock.Object);
-            sut.ModelState.AddModelError("test","test");
+
             //Act
+            sut.ModelState.AddModelError("test", "test");
             _ = sut.Login(new LoginRequest());
             var modelState = sut.ModelState;
 

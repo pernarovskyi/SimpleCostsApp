@@ -45,8 +45,8 @@ namespace UserApplication.Repositories
             var obj = _appDbContext.Users.FirstOrDefault(u => u.Id == user.Id);
             if (obj != null)
             {
-                obj.Email = user.Email;             
-
+                obj.Email = user.Email;
+                obj.PasswordHash = user.PasswordHash;
 
                 _appDbContext.Users.Update(obj);
                 _appDbContext.SaveChanges();
